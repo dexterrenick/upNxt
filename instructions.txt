@@ -1,0 +1,7 @@
+Instructions:
+Created in Visual Studio Code
+Go to java file, go to java projects in VSCode, go to referenced libraries, add library, enter path of your jar file
+Right click on code in SQLDatabaseConnection.java and select run code
+Code will run properly in console
+
+NOTE: This will not run in console or anywhere if you do not provide project dependency of mysql jar file
