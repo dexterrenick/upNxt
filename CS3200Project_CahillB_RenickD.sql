@@ -1,5 +1,5 @@
-CREATE DATABASE upNxt;
-USE upNxt;
+CREATE DATABASE upnxt;
+USE upnxt;
 
 CREATE TABLE label
 (
@@ -14,6 +14,7 @@ CREATE TABLE artist
 	artistId INT AUTO_INCREMENT PRIMARY KEY,
     artistName VARCHAR(100),
     labelId INT,
+    songCount int(1) NOT NULL default '0',
     FOREIGN KEY (labelId) REFERENCES label(labelId)
       ON UPDATE CASCADE ON DELETE SET NULL
 );
@@ -49,6 +50,8 @@ CREATE TABLE producer
     producerName VARCHAR(100)
 );
 
+DROP TABLE IF EXISTS song;
+
 CREATE TABLE song
 (
 	songID INT AUTO_INCREMENT PRIMARY KEY,
@@ -56,11 +59,14 @@ CREATE TABLE song
     albumId INT,
     producerId INT,
     writerId INT,
+    artistId int,
     FOREIGN KEY (albumId) REFERENCES album(albumId)
       ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (producerId) REFERENCES producer(producerId)
 	  ON UPDATE CASCADE ON DELETE CASCADE,
 	FOREIGN KEY (writerId) REFERENCES writer(writerID)
+	  ON UPDATE CASCADE ON DELETE CASCADE,
+	FOREIGN KEY (artistID) REFERENCES artist(artistId)
 	  ON UPDATE CASCADE ON DELETE CASCADE
 );
 

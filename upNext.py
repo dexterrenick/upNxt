@@ -10,6 +10,8 @@ import mysql.connector
 import smtplib
 import time
 import os
+from prettytable import PrettyTable
+
 
 global signedIn
 signedIn = False
@@ -101,8 +103,15 @@ def printCreatorMenu():
     print("5) Add Song")
     print("6) Add Artist")
     print("7) Add Artist Socials")
-    print("8) Logout")
-    print("9) Close Program")
+    print("8) Delete Artist")
+    print("9) Delete Writer")
+    print("10) Delete Producer")
+    print("11) Delete Album")
+    print("12) Delete Song")
+    print("13) Delete Artist")
+    print("14) Delete Artist Socials")
+    print("15) Logout")
+    print("16) Close Program")
 
 
 def printSignupOptions():
@@ -199,22 +208,142 @@ def browseMenu():
         option = input("Enter your option: ")
         print("Invalid option. Please try again.")
 
+    if (option == "1"):
+        clearConsole()
+        browseArtists()
+    elif (option == "2"):
+        clearConsole()
+        browseWriters()
+    elif (option == "3"):
+        clearConsole()
+        browseProducers()
+    elif (option == "5"):
+        clearConsole()
+        browseAlbums()
+    elif (option == "6"):
+        clearConsole()
+        browseSongs()
+    elif (option == "8"):
+        clearConsole()
+        browsSocials()
+    elif (option == "8"):
+        clearConsole()
+        userMenu()
+    elif (option == "9"):
+        quit()
+
+def browseArtists():
+    print("-"*97)
+    print(("-"*40) + "Browse Artists" + ("-"*40))
+    print("-"*97)
+    userDatabase = mysql.connector.connect(user='root', password='password', host='127.0.0.1', database='upnxt')
+    mycursor = userDatabase.cursor()
+    mycursor= userDatabase.cursor(buffered=True)
+    print("-"*97)
+    print(("-"*40) + "Search Artist" + ("-"*40))
+    print("-"*97)
+    mycursor.callproc('browseArtist', args=())
+    mycursor.stored_results()
+    print ("%28s  %28s" % ("Artist","Number of Songs"))
+    for result in mycursor.stored_results():
+        for res in result:
+            print ("%28s  %28s" % ((res[1])[:27],res[3]))
+    print ("%28s  %28s" % ("Artist","Number of Songs"))
+    input("Press Enter to continue...")
+    clearConsole()
+    browseMenu()
+
 def searchMenu():
     print("-"*97)
     print(("-"*40) + "Search Menu" + ("-"*40))
     print("-"*97)
     print("1) Search Artist")
-    print("2) Search Writer")
-    print("3) Search Producer")
-    print("4) Search Album")
-    print("5) Search Song")
-    print("7) Search Artist Socials")
-    print("8) Back")
-    print("9) Close Program")
+    print("2) Search Album")
+    print("3) Search Song")
+    print("4) Back")
+    print("5) Close Program")
     option = "-1"
     while (not(option == "1" or option == "2" or option == "3" or option == "4" or option == "5" or option == "6" or option == "7" or option == "8" or option == "9")):
         option = input("Enter your option: ")
         print("Invalid option. Please try again.")
+    
+    if (option == "1"):
+        clearConsole()
+        searchArtist()
+    elif (option == "2"):
+        clearConsole()
+        searchAlbum()
+    elif (option == "3"):
+        clearConsole()
+        searchSong()
+    elif (option == "4"):
+        clearConsole()
+        userMenu()
+    elif (option == "5"):
+        quit()
+
+
+def searchArtist():
+    userDatabase = mysql.connector.connect(user='root', password='password', host='127.0.0.1', database='upnxt')
+    mycursor = userDatabase.cursor()
+    mycursor= userDatabase.cursor(buffered=True)
+    print("-"*97)
+    print(("-"*40) + "Search Artist" + ("-"*40))
+    print("-"*97)
+    option = input("Enter artist exact name: ")
+    # Need spaces because that's how things are in the database
+    option = " " + option + " "
+    mycursor.callproc('artistQuery', args=(option, ))
+    mycursor.stored_results()
+    print ("%28s  %28s  %28s %28s %28s %28s" % ("Artist","Song","Album","Facebook","Twitter","Website"))
+    for result in mycursor.stored_results():
+        for res in result:
+            print ("%28s  %28s  %28s %28s %28s %28s" % (res[0],res[1],res[2],(res[3])[11:],(res[4])[11:],(res[5])[11:]))
+    input("Press Enter to continue...")
+    clearConsole()
+    searchMenu()
+
+def searchAlbum():
+    userDatabase = mysql.connector.connect(user='root', password='password', host='127.0.0.1', database='upnxt')
+    mycursor = userDatabase.cursor()
+    mycursor= userDatabase.cursor(buffered=True)
+    print("-"*97)
+    print(("-"*40) + "Search Album" + ("-"*40))
+    print("-"*97)
+    option = input("Enter album exact name: ")
+    # Need spaces because that's how things are in the database
+    option = option 
+    mycursor.callproc('albumQuery', args=(option, ))
+    mycursor.stored_results()
+    print ("%28s  %28s  %28s %28s %28s " % ("Album","Artist","Song","Producer","Label"))
+    for result in mycursor.stored_results():
+        for res in result:
+            print ("%28s  %28s  %28s %28s %28s" % (res[1],res[0],res[2],res[3],res[4]))
+    input("Press Enter to continue...")
+    clearConsole()
+    searchMenu()
+
+def searchSong():
+    userDatabase = mysql.connector.connect(user='root', password='password', host='127.0.0.1', database='upnxt')
+    mycursor = userDatabase.cursor()
+    mycursor= userDatabase.cursor(buffered=True)
+    print("-"*97)
+    print(("-"*40) + "Search Song" + ("-"*40))
+    print("-"*97)
+    option = input("Enter song exact name: ")
+    # Need spaces because that's how things are in the database
+    option = option 
+    mycursor.callproc('songQuery', args=(option, ))
+    mycursor.stored_results()
+    print ("%28s  %28s  %28s %28s %28s " % ("Song","Album","Artist","Writer","Producer"))
+    for result in mycursor.stored_results():
+        for res in result:
+            print ("%28s  %28s  %28s %28s %28s" % (res[1],res[0],res[2],res[3],res[4]))
+    input("Press Enter to continue...")
+    clearConsole()
+    searchMenu()
+
+
 
 def userMenu():
     print("-"*97)
@@ -223,8 +352,9 @@ def userMenu():
     
     print("1) Browse")
     print("2) Search")
-    print("3) Main Menu")
-    print("4) Close Program")
+    print("3)Discover Random Artist")
+    print("4) Main Menu")
+    print("5) Close Program")
 
     option = "-1"
     while (not(option == "1" or option == "2" or option == "3" or option == "4")):
@@ -237,6 +367,11 @@ def userMenu():
     if (option == "2"):
         searchMenu()
     if (option == "3"):
+        # TODO: Add random artist functionality
+        print()
+    if (option == "4"):
+        printInitialMenu()
+    if (option == "5"):
         quit()
 
 
