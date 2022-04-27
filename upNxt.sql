@@ -14,6 +14,7 @@ CREATE TABLE artist
 	artistId INT AUTO_INCREMENT PRIMARY KEY,
     artistName VARCHAR(100),
     labelId INT,
+    songCount INT DEFAULT 0,
     FOREIGN KEY (labelId) REFERENCES label(labelId)
       ON UPDATE CASCADE ON DELETE SET NULL
 );
@@ -39,7 +40,7 @@ CREATE TABLE album
 
 CREATE TABLE writer
 (
-	writerID INT AUTO_INCREMENT PRIMARY KEY,
+	writerId INT AUTO_INCREMENT PRIMARY KEY,
     writerName VARCHAR(100)
 );
 
@@ -56,11 +57,14 @@ CREATE TABLE song
     albumId INT,
     producerId INT,
     writerId INT,
+    artistId INT,
     FOREIGN KEY (albumId) REFERENCES album(albumId)
       ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (producerId) REFERENCES producer(producerId)
 	  ON UPDATE CASCADE ON DELETE CASCADE,
-	FOREIGN KEY (writerId) REFERENCES writer(writerID)
+	FOREIGN KEY (writerId) REFERENCES writer(writerId)
+	  ON UPDATE CASCADE ON DELETE CASCADE,
+	FOREIGN KEY (artistId) REFERENCES artist(artistId)
 	  ON UPDATE CASCADE ON DELETE CASCADE
 );
 

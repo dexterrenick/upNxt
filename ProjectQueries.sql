@@ -1,5 +1,7 @@
 USE upNxt;
 
+select * from artist;
+
 -- Total songs function
 DROP PROCEDURE IF EXISTS totalSong;
 DELIMITER //
@@ -21,7 +23,7 @@ END//
 
 DELIMITER ;
 
--- Total songs trigger for an Add
+Total songs trigger for an Add
 DELIMITER //
 
 CREATE TRIGGER totalSongs_after_insert AFTER INSERT ON song FOR EACH ROW
@@ -31,7 +33,7 @@ END//
 
 DELIMITER ;
 
--- Total songs trigger for an delete
+Total songs trigger for an delete
 DELIMITER //
 
 CREATE TRIGGER totalSongs_after_delete AFTER DELETE ON song FOR EACH ROW
@@ -47,14 +49,16 @@ DROP PROCEDURE IF EXISTS artistQuery;
 DELIMITER //
 CREATE PROCEDURE artistQuery(IN nameOfArtist VARCHAR(100))
 BEGIN
-		SELECT artist.artistName, song.songName, album.albumName, socials.facebook, socials.twitter, socials.website FROM song 
-        LEFT JOIN album ON song.albumID = album.albumID
-        LEFT JOIN artist ON artist.artistID = album.artistID
-        LEFT JOIN socials ON socials.artistID = artist.artistID
+		SELECT artist.artistName, song.songName, album.albumName, socials.facebook, socials.twitter, socials.website FROM artist 
+        LEFT JOIN album ON album.artistId = artist.artistId
+        LEFT JOIN socials ON socials.artistId = artist.artistId
+        LEFT JOIN song ON song.artistId = artist.artistId
         WHERE artist.artistName = nameOfArtist;
 END//
 DELIMITER ;
 
+select * from Artist where artistName = "Baby Keem";
+CALL artistQuery("Baby Keem");
 
 -- returns all the songs on an album when searching for an album
 DROP PROCEDURE IF EXISTS albumQuery;
@@ -105,12 +109,14 @@ BEGIN
     VALUES (artstName, label_p);
         
 END//
-
 DELIMITER ;
+
+Select * from song;
+Trinity Gospel Singers
+
 
 -- Add a Writer
 DELIMITER //
-
 CREATE PROCEDURE createWriter(wrterName VARCHAR(100))
 BEGIN
     
@@ -367,7 +373,7 @@ DELIMITER //
 
 CREATE PROCEDURE browseArtist()
 BEGIN
-		SELECT * FROM artist;
+		SELECT artist.artistName, artist.songCount, label.labelName from artist join label on artist.labelId = label.labelId;
 END//
 
 DELIMITER ;
@@ -397,7 +403,7 @@ DELIMITER //
 
 CREATE PROCEDURE browseAlbum()
 BEGIN
-		SELECT * FROM album;
+		select artist.artistname, album.albumname from upNxt.artist join upNxt.album on artist.artistId = album.artistId;
 END//
 
 DELIMITER ;
@@ -407,7 +413,7 @@ DELIMITER //
 
 CREATE PROCEDURE browseSong()
 BEGIN
-		SELECT * FROM song;
+		select artist.artistname, song.songName from upNxt.song join upNxt.artist on song.artistId = artist.artistId;
 END//
 
 DELIMITER ;
@@ -417,8 +423,8 @@ DELIMITER //
 
 CREATE PROCEDURE browseSocials()
 BEGIN
-        
-		SELECT * FROM socials;
+		select artist.artistName, socials.facebook, socials.twitter, socials.website from upNxt.artist join upNxt.socials on artist.artistId = socials.artistId;
+
 END//
 
 DELIMITER ;
@@ -428,8 +434,7 @@ DELIMITER //
 
 CREATE PROCEDURE randomArtist()
 BEGIN
-        
-		SELECT * FROM artist ORDER BY rand() limit 1;
+		SELECT artist.artistName, artist.songCount, label.labelName from artist join label on artist.labelId = label.labelId ORDER BY rand() limit 1;
 END//
 
 DELIMITER ;

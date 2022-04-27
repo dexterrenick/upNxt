@@ -42,7 +42,7 @@ def dumpArtist(file):
     with open("./databaseData/" + file + ".csv") as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
         for row in csv_reader:
-            artistString = row[0]
+            artistString = row[0].strip()
             # Add one so we don't get 0
             labelNum = (random.randrange(numLabels-1))+1
             sql = "INSERT IGNORE INTO artist (artistName, labelId) VALUES (%s, %s)"
