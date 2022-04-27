@@ -8,37 +8,31 @@ DELIMITER //
 
 CREATE PROCEDURE totalSong(artID INT)
 BEGIN
-		DECLARE CONTINUE HANDLER FOR SQLEXCEPTION BEGIN END;
-		ALTER TABLE artist ADD COLUMN totalSongs INTEGER;
+		DECLARE numSongs INT;
         
-		-- SELECT artist.artistId, COUNT(song.songID) INTO songCount FROM song 
-        INSERT INTO songCount SELECT artist.artistId, COUNT(song.songID) FROM song  
-        LEFT JOIN album ON song.albumID = album.albumID
-        LEFT JOIN artist ON artist.artistID = album.artistID
-		GROUP BY artistID;
+        SELECT count(*) FROM song LEFT JOIN artist ON song.artistId = artist.artistId WHERE artist.artistId = artID GROUP BY artist.artistId INTO numSongs;
+		        
+		-- Set to 0 if it is null 
+        UPDATE artist SET songCount = IFNULL(numSongs, 0) WHERE artistId = artID;
         
-        UPDATE artist SET totalSongs = songCount WHERE artistID = artID;
         
 END//
-
 DELIMITER ;
 
-Total songs trigger for an Add
+Drop trigger if exists totalSongs_after_insert;
+-- Total songs trigger for an Add
 DELIMITER //
-
 CREATE TRIGGER totalSongs_after_insert AFTER INSERT ON song FOR EACH ROW
 BEGIN
 	CALL totalSong(NEW.artistId);
 END//
-
 DELIMITER ;
 
-Total songs trigger for an delete
+Drop trigger if exists totalSongs_after_delete;
+-- Total songs trigger for an delete
 DELIMITER //
-
 CREATE TRIGGER totalSongs_after_delete AFTER DELETE ON song FOR EACH ROW
 BEGIN
-	
 	CALL totalSong(OLD.artistId);
 END//
 
@@ -56,9 +50,6 @@ BEGIN
         WHERE artist.artistName = nameOfArtist;
 END//
 DELIMITER ;
-
-select * from Artist where artistName = "Baby Keem";
-CALL artistQuery("Baby Keem");
 
 -- returns all the songs on an album when searching for an album
 DROP PROCEDURE IF EXISTS albumQuery;
@@ -162,17 +153,23 @@ DELIMITER ;
 
 -- Add a song
 DELIMITER //
-
-CREATE PROCEDURE createSong(sngName VARCHAR(100), albmName VARCHAR(100), prducerName VARCHAR(100), wrterName VARCHAR(100))
+CREATE PROCEDURE createSong(sngName VARCHAR(100), albmName VARCHAR(100), prducerName VARCHAR(100), wrterName VARCHAR(100), artstName VARCHAR(100))
 BEGIN
     DECLARE album_p INT;
     DECLARE producer_p INT;
     DECLARE writer_p INT;
     DECLARE artist_p INT;
+
+    
+	SELECT artist.artistId INTO artist_p FROM artist WHERE artstName = artist.artistName;
+    IF artist_p IS NULL THEN INSERT INTO artist(artistName)
+    VALUES (artstName);
+    SELECT artist.artistId INTO artist_p FROM artist WHERE artstName = artist.artistName;
+    END IF;
     
     SELECT album.albumId INTO album_p FROM album WHERE albmName = album.albumName;
-    IF album_p IS NULL THEN INSERT INTO album(albumName)
-    VALUES (albmName);
+    IF album_p IS NULL THEN INSERT INTO album(albumName, ArtistId)
+    VALUES (albmName, artist_p);
     SELECT album.albumId INTO album_p FROM album WHERE albmName = album.albumName;
     END IF;
     
@@ -188,15 +185,10 @@ BEGIN
     SELECT writer.writerId INTO writer_p FROM writer WHERE wrterName = writer.writerName;
     END IF;
     
-    SELECT artist.artistId INTO artist_p FROM artist WHERE artstName = artist.artistName;
-    IF artist_p IS NULL THEN INSERT INTO artist(artistName)
-    VALUES (artstName);
-    SELECT artist.artistId INTO artist_p FROM artist WHERE artstName = artist.artistName;
-    END IF;
     
-	INSERT IGNORE INTO album(albumId, albumName, artistId)
-    VALUES (albmId, albmName, artist_p);
-        
+	INSERT IGNORE INTO song(songName, albumId, producerId, writerId, artistId)
+    VALUES (sngName, album_p, producer_p, writer_p, artist_p);
+    COMMIT ;
 END//
 
 DELIMITER ;
@@ -291,18 +283,17 @@ END//
 
 DELIMITER ;
 
+
 -- Delete socials
 DELIMITER //
-
 CREATE PROCEDURE deleteSocials(artstName VARCHAR(100))
 BEGIN
 	DECLARE artist_p INT;
-    SELECT socials.artistId INTO artist_p FROM socials WHERE artstName = artist.artistName;
+    SELECT socials.artistId INTO artist_p FROM socials join artist on socials.artistId = artist.artistId WHERE artstName = artist.artistName;
     
 	DELETE FROM socials WHERE artist_p = artistId;
         
 END//
-
 DELIMITER ;
 
 -- Search Artist, filtered by Name because i figured a user would never know the primary key
@@ -437,4 +428,39 @@ BEGIN
 		SELECT artist.artistName, artist.songCount, label.labelName from artist join label on artist.labelId = label.labelId ORDER BY rand() limit 1;
 END//
 
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS updateArtist;
+DELIMITER //
+CREATE PROCEDURE updateArtist(oldName VARCHAR(100), newName VARCHAR(100), newLabel VARCHAR(100))
+BEGIN        
+		DECLARE artstId INT;
+        DECLARE artstLabel INT;
+        
+        Select artist.artistId from artist where artist.artistName = oldName INTO artstId;
+        Select label.labelId from artist left join label on artist.labelId = label.labelId WHERE label.labelName = newLabel LIMIT 1 INTO artstLabel;
+		
+        
+        IF(artstId IS NOT NULL) THEN
+			UPDATE artist SET artist.labelId = artstLabel WHERE artistId = artstId;
+			UPDATE artist SET artistName = newName WHERE artistId = artstId;
+		END IF;
+END//
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS updateSocials;
+DELIMITER //
+CREATE PROCEDURE updateSocials(artistName VARCHAR(100), newFacebook VARCHAR(100), newTwitter VARCHAR(100), newWebsite VARCHAR(100))
+BEGIN        
+		DECLARE artstId INT;
+	
+        Select artist.artistId from artist where artist.artistName = oldName INTO artstId;
+		
+        
+        IF(artstId IS NOT NULL) THEN
+			UPDATE socials SET socials.facbook = newFacebook WHERE socials.artistId = artstId;
+			UPDATE socials SET socials.twitter = newTwitter WHERE socials.artistId = artstId;
+            UPDATE socials SET socials.website = newWebsite WHERE socials.artistId = artstId;
+		END IF;
+END//
 DELIMITER ;
