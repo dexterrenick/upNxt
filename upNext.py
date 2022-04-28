@@ -10,11 +10,28 @@ import mysql.connector
 import smtplib
 import time
 import os
-from prettytable import PrettyTable
 
 
 global signedIn
 signedIn = False
+
+global dbUser
+dbUser = ""
+global dbPassword 
+dbPassword = ""
+
+#sets database username and password to be used everywhere
+def initializeDatabase():
+    global dbUser
+    global dbPassword
+    dbUser = input("Enter your database username: ")
+    dbPassword = input("Enter your database password: ")
+    try:
+        mysql.connector.connect(user=dbUser, password=dbPassword, host='127.0.0.1', database='upnextusers')
+    except mysql.connector.Error as err:
+        print("Something went wrong: {}".format(err))
+        print("Program ending. Please try again once you have valid login credentials")
+        quit()
 
 # Sends email confirmation
 def sendEmailConfirmation(username, password):
@@ -43,10 +60,14 @@ def sendEmailConfirmation(username, password):
 
 # Creates account if they do not exist
 def createAccount():
+    global dbUser
+    global dbPassword
+    global signedIn
+    print(signedIn)
     print("-"*97)
     print(("-"*43) + "Creator Account" + ("-"*42))
     print("-"*97)
-    userDatabase = mysql.connector.connect(user='root', password='password', host='127.0.0.1', database='upnextusers')
+    userDatabase = mysql.connector.connect(user=dbUser, password=dbPassword, host='127.0.0.1', database='upnextusers')
     mycursor = userDatabase.cursor()
     mycursor= userDatabase.cursor(buffered=True)
     validEmail = False
@@ -90,7 +111,9 @@ def clearConsole():
         
 
 def addArtist():
-    userDatabase = mysql.connector.connect(user='root', password='password', host='127.0.0.1', database='upnxt')
+    global dbUser
+    global dbPassword
+    userDatabase = mysql.connector.connect(user=dbUser, password=dbPassword, host='127.0.0.1', database='upnxt')
     mycursor = userDatabase.cursor()
     mycursor= userDatabase.cursor(buffered=True)
     print("-"*97)
@@ -107,7 +130,9 @@ def addArtist():
     printCreatorMenu()
 
 def addWriter():
-    userDatabase = mysql.connector.connect(user='root', password='password', host='127.0.0.1', database='upnxt')
+    global dbUser
+    global dbPassword
+    userDatabase = mysql.connector.connect(user=dbUser, password=dbPassword, host='127.0.0.1', database='upnxt')
     mycursor = userDatabase.cursor()
     mycursor= userDatabase.cursor(buffered=True)
     print("-"*97)
@@ -123,7 +148,9 @@ def addWriter():
     printCreatorMenu()
 
 def addProducer():
-    userDatabase = mysql.connector.connect(user='root', password='password', host='127.0.0.1', database='upnxt')
+    global dbUser
+    global dbPassword
+    userDatabase = mysql.connector.connect(user=dbUser, password=dbPassword, host='127.0.0.1', database='upnxt')
     mycursor = userDatabase.cursor()
     mycursor= userDatabase.cursor(buffered=True)
     print("-"*97)
@@ -139,7 +166,9 @@ def addProducer():
     printCreatorMenu()
 
 def addAlbum():
-    userDatabase = mysql.connector.connect(user='root', password='password', host='127.0.0.1', database='upnxt')
+    global dbUser
+    global dbPassword
+    userDatabase = mysql.connector.connect(user=dbUser, password=dbPassword, host='127.0.0.1', database='upnxt')
     mycursor = userDatabase.cursor()
     mycursor= userDatabase.cursor(buffered=True)
     print("-"*97)
@@ -156,7 +185,9 @@ def addAlbum():
     printCreatorMenu()
 
 def addSong():
-    userDatabase = mysql.connector.connect(user='root', password='password', host='127.0.0.1', database='upnxt')
+    global dbUser
+    global dbPassword
+    userDatabase = mysql.connector.connect(user=dbUser, password=dbPassword, host='127.0.0.1', database='upnxt')
     mycursor = userDatabase.cursor()
     mycursor= userDatabase.cursor(buffered=True)
     print("-"*97)
@@ -175,7 +206,9 @@ def addSong():
     printCreatorMenu()
 
 def addArtistSocials():
-    userDatabase = mysql.connector.connect(user='root', password='password', host='127.0.0.1', database='upnxt')
+    global dbUser
+    global dbPassword
+    userDatabase = mysql.connector.connect(user=dbUser, password=dbPassword, host='127.0.0.1', database='upnxt')
     mycursor = userDatabase.cursor()
     mycursor= userDatabase.cursor(buffered=True)
     print("-"*97)
@@ -193,7 +226,9 @@ def addArtistSocials():
     printCreatorMenu()
 
 def deleteArtist():
-    userDatabase = mysql.connector.connect(user='root', password='password', host='127.0.0.1', database='upnxt')
+    global dbUser
+    global dbPassword
+    userDatabase = mysql.connector.connect(user=dbUser, password=dbPassword, host='127.0.0.1', database='upnxt')
     mycursor = userDatabase.cursor()
     mycursor= userDatabase.cursor(buffered=True)
     print("-"*97)
@@ -208,7 +243,9 @@ def deleteArtist():
     printCreatorMenu()
 
 def deleteWriter():
-    userDatabase = mysql.connector.connect(user='root', password='password', host='127.0.0.1', database='upnxt')
+    global dbUser
+    global dbPassword
+    userDatabase = mysql.connector.connect(user=dbUser, password=dbPassword, host='127.0.0.1', database='upnxt')
     mycursor = userDatabase.cursor()
     mycursor= userDatabase.cursor(buffered=True)
     print("-"*97)
@@ -223,7 +260,9 @@ def deleteWriter():
     printCreatorMenu()
 
 def deleteProducer():
-    userDatabase = mysql.connector.connect(user='root', password='password', host='127.0.0.1', database='upnxt')
+    global dbUser
+    global dbPassword
+    userDatabase = mysql.connector.connect(user=dbUser, password=dbPassword, host='127.0.0.1', database='upnxt')
     mycursor = userDatabase.cursor()
     mycursor= userDatabase.cursor(buffered=True)
     print("-"*97)
@@ -238,7 +277,9 @@ def deleteProducer():
     printCreatorMenu()
 
 def deleteAlbum():
-    userDatabase = mysql.connector.connect(user='root', password='password', host='127.0.0.1', database='upnxt')
+    global dbUser
+    global dbPassword
+    userDatabase = mysql.connector.connect(user=dbUser, password=dbPassword, host='127.0.0.1', database='upnxt')
     mycursor = userDatabase.cursor()
     mycursor= userDatabase.cursor(buffered=True)
     print("-"*97)
@@ -253,7 +294,9 @@ def deleteAlbum():
     printCreatorMenu()
 
 def deleteSong():
-    userDatabase = mysql.connector.connect(user='root', password='password', host='127.0.0.1', database='upnxt')
+    global dbUser
+    global dbPassword
+    userDatabase = mysql.connector.connect(user=dbUser, password=dbPassword, host='127.0.0.1', database='upnxt')
     mycursor = userDatabase.cursor()
     mycursor= userDatabase.cursor(buffered=True)
     print("-"*97)
@@ -268,7 +311,9 @@ def deleteSong():
     printCreatorMenu()
 
 def deleteArtistSocials():
-    userDatabase = mysql.connector.connect(user='root', password='password', host='127.0.0.1', database='upnxt')
+    global dbUser
+    global dbPassword
+    userDatabase = mysql.connector.connect(user=dbUser, password=dbPassword, host='127.0.0.1', database='upnxt')
     mycursor = userDatabase.cursor()
     mycursor= userDatabase.cursor(buffered=True)
     print("-"*97)
@@ -283,7 +328,9 @@ def deleteArtistSocials():
     printCreatorMenu()
 
 def editArtist():
-    userDatabase = mysql.connector.connect(user='root', password='password', host='127.0.0.1', database='upnxt')
+    global dbUser
+    global dbPassword
+    userDatabase = mysql.connector.connect(user=dbUser, password=dbPassword, host='127.0.0.1', database='upnxt')
     mycursor = userDatabase.cursor()
     mycursor= userDatabase.cursor(buffered=True)
     print("-"*97)
@@ -300,7 +347,9 @@ def editArtist():
     printCreatorMenu()
 
 def editSocials():
-    userDatabase = mysql.connector.connect(user='root', password='password', host='127.0.0.1', database='upnxt')
+    global dbUser
+    global dbPassword
+    userDatabase = mysql.connector.connect(user=dbUser, password=dbPassword, host='127.0.0.1', database='upnxt')
     mycursor = userDatabase.cursor()
     mycursor= userDatabase.cursor(buffered=True)
     print("-"*97)
@@ -407,7 +456,9 @@ def printSignupOptions():
 
 # Signup menu with controls to login or signup
 def signUpMenu():
-    userDatabase = mysql.connector.connect(user='root', password='password', host='127.0.0.1', database='upnextusers')
+    global dbUser
+    global dbPassword
+    userDatabase = mysql.connector.connect(user=dbUser, password=dbPassword, host='127.0.0.1', database='upnextusers')
     mycursor = userDatabase.cursor()
     mycursor= userDatabase.cursor(buffered=True)
 
@@ -521,10 +572,12 @@ def browseMenu():
 
 # Displays a random artist
 def displayRandomArtist():
+    global dbUser
+    global dbPassword
     print("-"*97)
     print(("-"*40) + "Random Artist Gen" + ("-"*40))
     print("-"*97)
-    userDatabase = mysql.connector.connect(user='root', password='password', host='127.0.0.1', database='upnxt')
+    userDatabase = mysql.connector.connect(user=dbUser, password=dbPassword, host='127.0.0.1', database='upnxt')
     mycursor = userDatabase.cursor()
     mycursor= userDatabase.cursor(buffered=True)
     mycursor.callproc('randomArtist', args=())
@@ -538,10 +591,12 @@ def displayRandomArtist():
     userMenu()
 
 def browseArtists():
+    global dbUser
+    global dbPassword
     print("-"*97)
     print(("-"*40) + "Browse Artists" + ("-"*40))
     print("-"*97)
-    userDatabase = mysql.connector.connect(user='root', password='password', host='127.0.0.1', database='upnxt')
+    userDatabase = mysql.connector.connect(user=dbUser, password=dbPassword, host='127.0.0.1', database='upnxt')
     mycursor = userDatabase.cursor()
     mycursor= userDatabase.cursor(buffered=True)
     mycursor.callproc('browseArtist', args=())
@@ -556,10 +611,12 @@ def browseArtists():
     browseMenu()
 
 def browseWriters():
+    global dbUser
+    global dbPassword
     print("-"*97)
     print(("-"*40) + "Browse Writers" + ("-"*40))
     print("-"*97)
-    userDatabase = mysql.connector.connect(user='root', password='password', host='127.0.0.1', database='upnxt')
+    userDatabase = mysql.connector.connect(user=dbUser, password=dbPassword, host='127.0.0.1', database='upnxt')
     mycursor = userDatabase.cursor()
     mycursor= userDatabase.cursor(buffered=True)
     mycursor.callproc('browseWriter', args=())
@@ -574,10 +631,12 @@ def browseWriters():
     browseMenu()
 
 def browseProducers():
+    global dbUser
+    global dbPassword
     print("-"*97)
     print(("-"*40) + "Browse Producers" + ("-"*40))
     print("-"*97)
-    userDatabase = mysql.connector.connect(user='root', password='password', host='127.0.0.1', database='upnxt')
+    userDatabase = mysql.connector.connect(user=dbUser, password=dbPassword, host='127.0.0.1', database='upnxt')
     mycursor = userDatabase.cursor()
     mycursor= userDatabase.cursor(buffered=True)
     mycursor.callproc('browseProducer', args=())
@@ -592,10 +651,12 @@ def browseProducers():
     browseMenu()
 
 def browseAlbums():
+    global dbUser
+    global dbPassword
     print("-"*97)
     print(("-"*40) + "Browse Albums" + ("-"*40))
     print("-"*97)
-    userDatabase = mysql.connector.connect(user='root', password='password', host='127.0.0.1', database='upnxt')
+    userDatabase = mysql.connector.connect(user=dbUser, password=dbPassword, host='127.0.0.1', database='upnxt')
     mycursor = userDatabase.cursor()
     mycursor= userDatabase.cursor(buffered=True)
     mycursor.callproc('browseAlbum', args=())
@@ -610,10 +671,12 @@ def browseAlbums():
     browseMenu()
 
 def browseSongs():
+    global dbUser
+    global dbPassword
     print("-"*97)
     print(("-"*40) + "Browse Songs" + ("-"*40))
     print("-"*97)
-    userDatabase = mysql.connector.connect(user='root', password='password', host='127.0.0.1', database='upnxt')
+    userDatabase = mysql.connector.connect(user=dbUser, password=dbPassword, host='127.0.0.1', database='upnxt')
     mycursor = userDatabase.cursor()
     mycursor= userDatabase.cursor(buffered=True)
     mycursor.callproc('browseSong', args=())
@@ -628,10 +691,12 @@ def browseSongs():
     browseMenu()
 
 def browseSocials():
+    global dbUser
+    global dbPassword
     print("-"*97)
     print(("-"*40) + "Browse Socials" + ("-"*40))
     print("-"*97)
-    userDatabase = mysql.connector.connect(user='root', password='password', host='127.0.0.1', database='upnxt')
+    userDatabase = mysql.connector.connect(user=dbUser, password=dbPassword, host='127.0.0.1', database='upnxt')
     mycursor = userDatabase.cursor()
     mycursor= userDatabase.cursor(buffered=True)
     mycursor.callproc('browseSocials', args=())
@@ -675,7 +740,9 @@ def searchMenu():
         quit()
 
 def searchArtist():
-    userDatabase = mysql.connector.connect(user='root', password='password', host='127.0.0.1', database='upnxt')
+    global dbUser
+    global dbPassword
+    userDatabase = mysql.connector.connect(user=dbUser, password=dbPassword, host='127.0.0.1', database='upnxt')
     mycursor = userDatabase.cursor()
     mycursor= userDatabase.cursor(buffered=True)
     print("-"*97)
@@ -702,7 +769,9 @@ def searchArtist():
     searchMenu()
 
 def searchAlbum():
-    userDatabase = mysql.connector.connect(user='root', password='password', host='127.0.0.1', database='upnxt')
+    global dbUser
+    global dbPassword
+    userDatabase = mysql.connector.connect(user=dbUser, password=dbPassword, host='127.0.0.1', database='upnxt')
     mycursor = userDatabase.cursor()
     mycursor= userDatabase.cursor(buffered=True)
     print("-"*97)
@@ -722,7 +791,9 @@ def searchAlbum():
     searchMenu()
 
 def searchSong():
-    userDatabase = mysql.connector.connect(user='root', password='password', host='127.0.0.1', database='upnxt')
+    global dbUser
+    global dbPassword
+    userDatabase = mysql.connector.connect(user=dbUser, password=dbPassword, host='127.0.0.1', database='upnxt')
     mycursor = userDatabase.cursor()
     mycursor= userDatabase.cursor(buffered=True)
     print("-"*97)
@@ -742,7 +813,9 @@ def searchSong():
     searchMenu()
 
 def searchSong():
-    userDatabase = mysql.connector.connect(user='root', password='password', host='127.0.0.1', database='upnxt')
+    global dbUser
+    global dbPassword
+    userDatabase = mysql.connector.connect(user=dbUser, password=dbPassword, host='127.0.0.1', database='upnxt')
     mycursor = userDatabase.cursor()
     mycursor= userDatabase.cursor(buffered=True)
     print("-"*97)
@@ -812,6 +885,7 @@ def printInitialMenu():
         quit()
 
 def main():
+    initializeDatabase()
     print("-"*97)
     print(("-"*20) + "Welcome to upNxt, a site to find your new favorite artist" + ("-"*20))
     print("-"*97)

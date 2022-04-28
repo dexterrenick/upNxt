@@ -1,4 +1,4 @@
-USE upNxt;
+USE upnxt;
 
 select * from artist;
 
@@ -454,11 +454,11 @@ CREATE PROCEDURE updateSocials(artistName VARCHAR(100), newFacebook VARCHAR(100)
 BEGIN        
 		DECLARE artstId INT;
 	
-        Select artist.artistId from artist where artist.artistName = oldName INTO artstId;
+        Select artist.artistId from artist where artist.artistName = artistName INTO artstId;
 		
         
         IF(artstId IS NOT NULL) THEN
-			UPDATE socials SET socials.facbook = newFacebook WHERE socials.artistId = artstId;
+			UPDATE socials SET socials.facebook = newFacebook WHERE socials.artistId = artstId;
 			UPDATE socials SET socials.twitter = newTwitter WHERE socials.artistId = artstId;
             UPDATE socials SET socials.website = newWebsite WHERE socials.artistId = artstId;
 		END IF;

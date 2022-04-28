@@ -1,5 +1,5 @@
-CREATE DATABASE upNxt;
-USE upNxt;
+CREATE DATABASE upnxt;
+USE upnxt;
 
 CREATE TABLE label
 (
